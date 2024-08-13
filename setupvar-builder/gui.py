@@ -1,12 +1,14 @@
 from typing import cast
 
-from dict_types import CheckBoxDict, NumericDict, OneOfDict
 from PyQt6.QtCore import (QAbstractTableModel, QModelIndex, QRect, Qt,
                           pyqtSignal)
 from PyQt6.QtGui import QAction, QKeySequence
 from PyQt6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFileDialog,
-                             QHBoxLayout, QMainWindow, QMenuBar, QPushButton,
-                             QSpinBox, QTableView, QVBoxLayout, QWidget)
+                             QHBoxLayout, QLineEdit, QMainWindow, QMenuBar,
+                             QPushButton, QSpinBox, QTableView, QVBoxLayout,
+                             QWidget)
+
+from dict_types import CheckBoxDict, NumericDict, OneOfDict
 
 
 class MyTableModel(QAbstractTableModel):
@@ -144,6 +146,17 @@ class MainWindow(QMainWindow):
     def initialize_central_widget(self, screen_geo: QRect):
         # create layout for central widget
         layout = QVBoxLayout()
+
+        # create layout for search bar
+        search_layout = QHBoxLayout()
+
+        # create search bar
+        self.search_bar = QLineEdit(self)
+        self.search_bar.setPlaceholderText("Search")
+        search_layout.addWidget(self.search_bar)
+
+        # add search layot to layout
+        layout.addLayout(search_layout)
 
         # add table view to layout
         layout.addWidget(self.table_view, alignment=Qt.AlignmentFlag.AlignTop)
