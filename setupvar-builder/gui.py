@@ -15,6 +15,7 @@ class MyTableModel(QAbstractTableModel):
     def __init__(self, data: list[list[str]]):
         super().__init__()
         self.table_data: list[list[str]] = data
+        self.filtered_data: list[list[str]] = self.table_data.copy()
         self.headers: list[str] = ["Settings", "VarStore", "VarOffset", "Options"]
         self.options: dict[int, str] = {}  # dictionary to store options for each row
 
@@ -65,6 +66,13 @@ class MyTableModel(QAbstractTableModel):
         if 0 <= row < len(self.table_data) and 0 <= col < len(self.headers):
             return self.table_data[row][col]
         return None
+    
+    def setFilter(self, query: str):
+        """Filter rows based on a query in column 1"""
+        self.filtered_data = [
+            row for row in self.table_data if query.lower() in str(row[0]).lower()
+        ]
+        self.layoutChanged.emit()
 
 
 class MainWindow(QMainWindow):
@@ -154,6 +162,9 @@ class MainWindow(QMainWindow):
         self.search_bar = QLineEdit(self)
         self.search_bar.setPlaceholderText("Search")
         search_layout.addWidget(self.search_bar)
+
+        # connect the QLineEdit's textChanged signal
+        self.search_bar.textChanged.connect(self.perform_search) # type: ignore
 
         # add search layot to layout
         layout.addLayout(search_layout)
@@ -289,6 +300,29 @@ class MainWindow(QMainWindow):
         if default == "Enabled":
             checkbox.setChecked(True)
         self.table_view.setIndexWidget(current_item, checkbox)
+
+    def perform_search(self):
+        search_text = self.search_bar.text()
+        if len(search_text) >= 2:
+            self.table_model.setFilter(search_text)
+        else:
+            self.table_model.setFilter("")
+
+        # update visibility of rows
+        self.update_rows_visibility()
+
+    def update_rows_visibility(self):
+        # track rows that should be visible
+        filtered_rows = set(self.table_model.table_data.index(row) for row in self.table_model.filtered_data)
+
+        for row in range(self.table_model.rowCount()):
+            is_visible = row in filtered_rows
+            self.table_view.setRowHidden(row, not is_visible)  # hide rows that are not in the filtered set                                             
+
+        # ensure that the table view is updated
+        viewport = self.table_view.viewport()
+        if viewport is not None:
+            viewport.update()
 
     def export_button(self):
         for row in range(len(self.table_data)):
