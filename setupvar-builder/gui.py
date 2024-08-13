@@ -113,7 +113,7 @@ class MainWindow(QMainWindow):
         self.table_view.setModel(self.table_model)
 
         # adjust table view height
-        table_height = screen_geo.height() - 135
+        table_height = screen_geo.height() - 165
         self.table_view.setFixedHeight(table_height)
 
         # set column widths
