@@ -5,8 +5,8 @@ from PyQt6.QtCore import (QAbstractTableModel, QModelIndex, QRect, Qt,
 from PyQt6.QtGui import QAction, QKeySequence
 from PyQt6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFileDialog,
                              QHBoxLayout, QLineEdit, QMainWindow, QMenuBar,
-                             QPushButton, QSpinBox, QTableView, QVBoxLayout,
-                             QWidget)
+                             QPushButton, QSizePolicy, QSpinBox, QTableView,
+                             QVBoxLayout, QWidget)
 
 from dict_types import CheckBoxDict, NumericDict, OneOfDict
 
@@ -120,9 +120,8 @@ class MainWindow(QMainWindow):
         self.table_view = QTableView()
         self.table_view.setModel(self.table_model)
 
-        # adjust table view height
-        table_height = screen_geo.height() - 165
-        self.table_view.setFixedHeight(table_height)
+        # set the table view's size policy to expanding
+        self.table_view.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
         # set column widths
         self.set_column_widths(screen_geo)
@@ -170,7 +169,7 @@ class MainWindow(QMainWindow):
         layout.addLayout(search_layout)
 
         # add table view to layout
-        layout.addWidget(self.table_view, alignment=Qt.AlignmentFlag.AlignTop)
+        layout.addWidget(self.table_view, 1)
 
         # add button to layout
         self.add_button_to_layout(layout)
