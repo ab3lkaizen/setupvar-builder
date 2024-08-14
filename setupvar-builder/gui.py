@@ -4,9 +4,9 @@ from PyQt6.QtCore import (QAbstractTableModel, QModelIndex, QRect, Qt,
                           pyqtSignal)
 from PyQt6.QtGui import QAction, QKeySequence
 from PyQt6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFileDialog,
-                             QHBoxLayout, QLineEdit, QMainWindow, QMenuBar,
-                             QPushButton, QSizePolicy, QSpinBox, QTableView,
-                             QVBoxLayout, QWidget)
+                             QHBoxLayout, QHeaderView, QLineEdit, QMainWindow,
+                             QMenuBar, QPushButton, QSizePolicy, QSpinBox,
+                             QTableView, QVBoxLayout, QWidget)
 
 from dict_types import CheckBoxDict, NumericDict, OneOfDict
 
@@ -66,7 +66,7 @@ class MyTableModel(QAbstractTableModel):
         if 0 <= row < len(self.table_data) and 0 <= col < len(self.headers):
             return self.table_data[row][col]
         return None
-    
+
     def setFilter(self, query: str):
         """Filter rows based on a query in column 1"""
         self.filtered_data = [
@@ -121,18 +121,21 @@ class MainWindow(QMainWindow):
         self.table_view.setModel(self.table_model)
 
         # set the table view's size policy to expanding
-        self.table_view.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.table_view.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        )
 
         # set column widths
-        self.set_column_widths(screen_geo)
+        self.set_column_widths()
 
-    def set_column_widths(self, screen_geo: QRect):
-        # calculate column width based on screen width and number of columns
-        column_width = (screen_geo.width() - 45) // len(self.table_model.headers)
+    def set_column_widths(self):
+        # get the header for the table view
+        header = self.table_view.horizontalHeader()
 
-        # set width for each column
-        for i in range(len(self.table_model.headers)):
-            self.table_view.setColumnWidth(i, column_width)
+        # set the section resize mode for all columns to `Stretch``
+        if header:
+            for col in range(self.table_model.columnCount()):
+                header.setSectionResizeMode(col, QHeaderView.ResizeMode.Stretch)
 
     def initialize_menu_bar(self):
         # create menu bar
@@ -163,7 +166,7 @@ class MainWindow(QMainWindow):
         search_layout.addWidget(self.search_bar)
 
         # connect the QLineEdit's textChanged signal
-        self.search_bar.textChanged.connect(self.perform_search) # type: ignore
+        self.search_bar.textChanged.connect(self.perform_search)  # type: ignore
 
         # add search layot to layout
         layout.addLayout(search_layout)
@@ -312,11 +315,16 @@ class MainWindow(QMainWindow):
 
     def update_rows_visibility(self):
         # track rows that should be visible
-        filtered_rows = set(self.table_model.table_data.index(row) for row in self.table_model.filtered_data)
+        filtered_rows = set(
+            self.table_model.table_data.index(row)
+            for row in self.table_model.filtered_data
+        )
 
         for row in range(self.table_model.rowCount()):
             is_visible = row in filtered_rows
-            self.table_view.setRowHidden(row, not is_visible)  # hide rows that are not in the filtered set                                             
+            self.table_view.setRowHidden(
+                row, not is_visible
+            )  # hide rows that are not in the filtered set
 
         # ensure that the table view is updated
         viewport = self.table_view.viewport()
