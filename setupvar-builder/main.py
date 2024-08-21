@@ -8,14 +8,12 @@ from dict_types import CheckBoxDict, NumericDict, OneOfDict
 from gui import MainWindow
 
 
-def initialize_ui() -> None:
-    window.open_file.connect(handle_file_selected)  # type: ignore
-    window.showMaximized()
-
-
 def handle_file_selected(file_path: str) -> None:
     window.clear_data()
-    parse_text_file(file_path)
+    parsed_input_file = parse_input_file(file_path)
+    settings_dict = dict_population(parsed_input_file)
+    table_population(settings_dict)
+    window.get_dict(settings_dict)
 
 
 def is_hex_line(start_line: str) -> bool:
@@ -23,8 +21,8 @@ def is_hex_line(start_line: str) -> bool:
     return bool(re.match(r"^0x[0-9a-fA-F]+:", start_line))
 
 
-def parse_text_file(input_file: str) -> None:
-    parsed_lines: list[str] = []
+def parse_input_file(input_file: str) -> list[str]:
+    parsed_input_file: list[str] = []
     accumulator: list[str] = []
 
     with open(input_file, "r", encoding="utf8") as in_file:
@@ -33,7 +31,7 @@ def parse_text_file(input_file: str) -> None:
 
             if is_hex_line(line):
                 if accumulator:  # if accumulator is not empty
-                    parsed_lines.append("\n".join(accumulator))
+                    parsed_input_file.append("\n".join(accumulator))
                     accumulator = []  # reset accumulator
 
                 accumulator.append(line)
@@ -42,12 +40,14 @@ def parse_text_file(input_file: str) -> None:
                     accumulator[-1] += " " + line
 
         if accumulator:
-            parsed_lines.append("\n".join(accumulator))
+            parsed_input_file.append("\n".join(accumulator))
 
-    dict_population(parsed_lines)
+    return parsed_input_file
 
 
-def dict_population(parsed_file: list[str]) -> None:
+def dict_population(
+    parsed_file: list[str],
+) -> dict[str, dict[str, OneOfDict | NumericDict | CheckBoxDict]]:
     varstore_pattern = re.compile(
         r'VarStoreId: 0x([0-9A-Fa-f]+), Size: 0x([0-9A-Fa-f]+), Name: "(.*?)"'
     )
@@ -219,8 +219,7 @@ def dict_population(parsed_file: list[str]) -> None:
                     )
                     numeric_dict["default"] = default
 
-    table_population(settings_dict)
-    window.get_dict(settings_dict)
+    return settings_dict
 
 
 def table_population(
@@ -270,7 +269,8 @@ def table_population(
 
 
 def main() -> None:
-    initialize_ui()
+    window.open_file.connect(handle_file_selected)  # type: ignore
+    window.showMaximized()
     sys.exit(app.exec())
 
 
