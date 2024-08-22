@@ -11,9 +11,10 @@ from gui import MainWindow
 def handle_file_selected(file_path: str) -> None:
     window.clear_data()
     parsed_input_file = parse_input_file(file_path)
-    settings_dict = dict_population(parsed_input_file)
-    table_population(settings_dict)
-    window.get_dict(settings_dict)
+    if parsed_input_file:
+        settings_dict = dict_population(parsed_input_file)
+        table_population(settings_dict)
+        window.get_dict(settings_dict)
 
 
 def is_hex_line(start_line: str) -> bool:
@@ -22,12 +23,25 @@ def is_hex_line(start_line: str) -> bool:
 
 
 def parse_input_file(input_file: str) -> list[str]:
+    extraction_mode = "Extraction mode: UEFI"
+    pattern = re.compile(r"\{.*\}")
+    pattern_found = False
     parsed_input_file: list[str] = []
     accumulator: list[str] = []
 
     with open(input_file, "r", encoding="utf8") as in_file:
+        first_line = in_file.readline()
+
+        # validate input file
+        if extraction_mode not in first_line:
+            return []  # return empty list if invalid
+
         for line in in_file:
             line = line.strip()
+
+            if not pattern_found:
+                if pattern.search(line):
+                    pattern_found = True
 
             if is_hex_line(line):
                 if accumulator:  # if accumulator is not empty
@@ -42,7 +56,11 @@ def parse_input_file(input_file: str) -> list[str]:
         if accumulator:
             parsed_input_file.append("\n".join(accumulator))
 
-    return parsed_input_file
+        # validate input file
+        if not pattern_found:
+            return []  # return empty list if invalid
+
+        return parsed_input_file
 
 
 def dict_population(
