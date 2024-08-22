@@ -34,6 +34,7 @@ def parse_input_file(input_file: str) -> list[str]:
 
         # validate input file
         if extraction_mode not in first_line:
+            window.show_message("Warning", "Invalid file")
             return []  # return empty list if invalid
 
         for line in in_file:
@@ -58,6 +59,9 @@ def parse_input_file(input_file: str) -> list[str]:
 
         # validate input file
         if not pattern_found:
+            window.show_message(
+                "Information", 'Use the "verbose" option of IFRExtractor'
+            )
             return []  # return empty list if invalid
 
         return parsed_input_file
