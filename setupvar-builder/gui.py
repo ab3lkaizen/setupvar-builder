@@ -5,8 +5,8 @@ from PyQt6.QtCore import (QAbstractTableModel, QModelIndex, QRect, Qt,
 from PyQt6.QtGui import QAction, QKeySequence
 from PyQt6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFileDialog,
                              QHBoxLayout, QHeaderView, QLineEdit, QMainWindow,
-                             QMenuBar, QPushButton, QSizePolicy, QSpinBox,
-                             QTableView, QVBoxLayout, QWidget)
+                             QMenuBar, QMessageBox, QPushButton, QSizePolicy,
+                             QSpinBox, QTableView, QVBoxLayout, QWidget)
 
 from dict_types import CheckBoxDict, NumericDict, OneOfDict
 
@@ -204,6 +204,16 @@ class MainWindow(QMainWindow):
     def center_main_window(self, screen_geo: QRect):
         # center the main window on the screen
         self.move(screen_geo.center() - self.rect().center())
+
+    def show_message(self, type: str, message: str):
+        # define constants
+        INFO_TYPE = "Information"
+        WARNING_TYPE = "Warning"
+
+        if type == INFO_TYPE:
+            QMessageBox.information(self, type, message, QMessageBox.StandardButton.Ok)
+        elif type == WARNING_TYPE:
+            QMessageBox.warning(self, type, message, QMessageBox.StandardButton.Ok)
 
     def open_new_file(self):
         file_path = self.open_file_dialog()
