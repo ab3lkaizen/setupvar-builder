@@ -347,6 +347,10 @@ class MainWindow(QMainWindow):
             viewport.update()
 
     def export_button(self):
+        self.export.append(
+            "# The script was created with setupvar-builder (https://github.com/ab3lkaizen/setupvar-builder)\n\n"
+        )  # attribution at the top of the script file
+
         for row in range(len(self.table_data)):
             name_index = self.table_model.index(row, 0)
             varstore_index = self.table_model.index(row, 1)
