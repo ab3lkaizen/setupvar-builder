@@ -423,6 +423,18 @@ class MainWindow(QMainWindow):
 
     def write_export(self, file_path: str):
         if file_path:
+            name_index = self.table_model.index(0, 0)
+            varstore_index = self.table_model.index(0, 1)
+            varoffset_index = self.table_model.index(0, 2)
+
+            name = self.table_model.data(name_index)
+            varstore = self.table_model.data(varstore_index)
+            varoffset = self.table_model.data(varoffset_index)
+
+            self.export.append(
+                f"# read {name} and reboot\nsetup_var.efi {varoffset} -n {varstore} -r"
+            )
+
             with open(file_path, "w", encoding="utf8") as output:
                 output.writelines(self.export)
 
