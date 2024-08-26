@@ -143,9 +143,16 @@ class MainWindow(QMainWindow):
 
         # create file menu and actions
         file_menu = menubar.addMenu("File")
+
+        # open action
         open_action = QAction("&Open", self)
         file_menu.addAction(open_action)  # type: ignore
         open_action.setShortcut(QKeySequence.StandardKey.Open)
+
+        # save action
+        save_action = QAction("&Save", self)
+        file_menu.addAction(save_action)  # type: ignore
+        save_action.setShortcut(QKeySequence.StandardKey.Save)
 
         # connect file menu actions to slot
         open_action.triggered.connect(self.open_new_file)  # type: ignore
