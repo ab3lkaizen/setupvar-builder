@@ -219,8 +219,10 @@ class MainWindow(QMainWindow):
         file_path = self.open_file_dialog()
         if file_path:
             self.open_file.emit(file_path)
+        self.setDisabled(False)
 
     def open_file_dialog(self) -> str:
+        self.setDisabled(True)  # temporarily disable the UI while loading
         file_path, _ = QFileDialog.getOpenFileName(
             self, "Open File", "", "Text files (*.txt)"
         )
