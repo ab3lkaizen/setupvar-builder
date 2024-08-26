@@ -156,6 +156,7 @@ class MainWindow(QMainWindow):
 
         # connect file menu actions to slot
         open_action.triggered.connect(self.open_new_file)  # type: ignore
+        save_action.triggered.connect(self.write_script)  # type: ignore
 
         # set menu bar
         self.setMenuBar(menubar)
@@ -200,7 +201,7 @@ class MainWindow(QMainWindow):
         # create export button
         export_button = QPushButton("Export")
         export_button.setFixedSize(110, 25)
-        export_button.clicked.connect(self.export_button)  # type: ignore
+        export_button.clicked.connect(self.write_script)  # type: ignore
 
         # add button to horizontal layout
         button_layout.addWidget(export_button)
@@ -353,7 +354,7 @@ class MainWindow(QMainWindow):
         if viewport is not None:
             viewport.update()
 
-    def export_button(self):
+    def write_script(self):
         self.export.append(
             "# The script was created with setupvar-builder (https://github.com/ab3lkaizen/setupvar-builder)\n\n"
         )  # attribution at the top of the script file
@@ -380,7 +381,7 @@ class MainWindow(QMainWindow):
                 self.export_checkbox(name, varstore, varoffset, widget)
 
         file_path = self.save_file_dialog()
-        self.write_export(file_path)
+        self.export_script(file_path)
 
     def export_oneof(self, name: str, varstore: str, varoffset: str, widget: QComboBox):
         oneofoption_name = widget.currentText()
@@ -437,7 +438,7 @@ class MainWindow(QMainWindow):
                             f"# {name}: Disabled\nsetup_var.efi {varoffset} 0x0 -s 0x1 -n {varstore}\n\n"
                         )
 
-    def write_export(self, file_path: str):
+    def export_script(self, file_path: str):
         if file_path:
             name_index = self.table_model.index(0, 0)
             varstore_index = self.table_model.index(0, 1)
