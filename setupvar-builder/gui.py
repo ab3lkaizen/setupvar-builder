@@ -222,13 +222,16 @@ class MainWindow(QMainWindow):
 
     def open_file_dialog(self) -> str:
         file_path, _ = QFileDialog.getOpenFileName(
-            self, "Open File", "", "Text Files (*.txt)"
+            self, "Open File", "", "Text files (*.txt)"
         )
         return file_path
 
     def save_file_dialog(self) -> str:
         file_path, _ = QFileDialog.getSaveFileName(
-            self, "Save File", "output.txt", "Text Files (*.txt)"
+            self,
+            "Save File",
+            "setupvar-script.nsh",
+            "EFI Shell scripts (*.nsh);; All files (*.*)",
         )
         return file_path
 
