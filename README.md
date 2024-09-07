@@ -1,5 +1,7 @@
 # setupvar-builder
 
+[![Downloads](https://img.shields.io/github/downloads/ab3lkaizen/setupvar-builder/total.svg)](https://github.com/ab3lkaizen/setupvar-builder/releases)
+
 `setupvar-builder` provides a UI for building scripts that you can later run using [setup_var.efi](https://github.com/datasone/setup_var.efi). `setup_var.efi` has the ability to read and write NVRAM variables, including those not visible through the UEFI.
 
 ## Disclaimer
