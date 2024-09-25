@@ -4,6 +4,8 @@
 
 `setupvar-builder` provides a UI for building scripts that you can later run using [setup_var.efi](https://github.com/datasone/setup_var.efi). `setup_var.efi` has the ability to read and write NVRAM variables, including those not visible through the UEFI.
 
+![Preview image](./assets/images/setupvar-builder_preview.png)
+
 ## Disclaimer
 
 I am not responsible for any damage that may occur to your computer. This tool is powerful and intended for advanced users only. There is a risk of damaging your hardware by altering unknown settings, particularly those related to basic system functionality. It is your responsibility to be informed about the desired settings and their impact on the system.
