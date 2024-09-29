@@ -1,3 +1,4 @@
+import re
 from typing import cast
 
 from PyQt6.QtCore import (QAbstractTableModel, QModelIndex, QRect, Qt,
@@ -67,11 +68,19 @@ class MyTableModel(QAbstractTableModel):
             return self.table_data[row][col]
         return None
 
-    def setFilter(self, query: str):
+    def setFilter(self, query: str, match_case: bool, match_whole_word: bool):
         """Filter rows based on a query in column 1"""
+
+        # build the regex pattern based on the options
+        flags = 0 if match_case else re.IGNORECASE
+        word_boundary = r"\b" if match_whole_word else ""
+        pattern = rf"{word_boundary}{re.escape(query)}{word_boundary}"
+
+        # filter rows
         self.filtered_data = [
-            row for row in self.table_data if query.lower() in str(row[0]).lower()
+            row for row in self.table_data if re.search(pattern, row[0], flags)
         ]
+
         self.layoutChanged.emit()
 
 
@@ -338,10 +347,13 @@ class MainWindow(QMainWindow):
 
     def perform_search(self):
         search_text = self.search_bar.text()
+        match_case = self.match_case.isChecked()
+        match_whole_word = self.match_whole_word.isChecked()
+
         if len(search_text) >= 2:
-            self.table_model.setFilter(search_text)
+            self.table_model.setFilter(search_text, match_case, match_whole_word)
         else:
-            self.table_model.setFilter("")
+            self.table_model.setFilter("", match_case, match_whole_word)
 
         # update visibility of rows
         self.update_rows_visibility()
