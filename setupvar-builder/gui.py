@@ -190,10 +190,16 @@ class MainWindow(QMainWindow):
         self.match_case.setText("Match case")
         search_layout.addWidget(self.match_case)
 
+        # connect the stateChanged signal of the `Match case` checkbox
+        self.match_case.stateChanged.connect(self.perform_search)  # type: ignore
+
         # create 'Match whole word only' checkbox
         self.match_whole_word = QCheckBox()
         self.match_whole_word.setText("Match whole word only")
         search_layout.addWidget(self.match_whole_word)
+
+        # connect the stateChanged signal of the `Match whole word only` checkbox
+        self.match_whole_word.stateChanged.connect(self.perform_search)  # type: ignore
 
         # add search layot to layout
         layout.addLayout(search_layout)
