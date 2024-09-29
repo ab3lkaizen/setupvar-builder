@@ -176,6 +176,11 @@ class MainWindow(QMainWindow):
         # connect the QLineEdit's textChanged signal
         self.search_bar.textChanged.connect(self.perform_search)  # type: ignore
 
+        # create 'Match case' checkbox
+        self.match_case = QCheckBox()
+        self.match_case.setText("Match case")
+        search_layout.addWidget(self.match_case)
+
         # add search layot to layout
         layout.addLayout(search_layout)
 
