@@ -108,6 +108,9 @@ class MainWindow(QMainWindow):
         # initialize export list
         self.export: list[str] = []
 
+        # initialize filtered rows set
+        self.filtered_rows: set[int] = set()
+
     def initialize_screen(self) -> QRect:
         # get the primary screen
         primary_screen = QApplication.primaryScreen()
@@ -366,13 +369,13 @@ class MainWindow(QMainWindow):
 
     def update_rows_visibility(self):
         # track rows that should be visible
-        filtered_rows = set(
+        self.filtered_rows = set(
             self.table_model.table_data.index(row)
             for row in self.table_model.filtered_data
         )
 
         for row in range(self.table_model.rowCount()):
-            is_visible = row in filtered_rows
+            is_visible = row in self.filtered_rows
             self.table_view.setRowHidden(
                 row, not is_visible
             )  # hide rows that are not in the filtered set
