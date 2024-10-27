@@ -7,7 +7,8 @@ from PyQt6.QtGui import QAction, QKeySequence
 from PyQt6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFileDialog,
                              QHBoxLayout, QHeaderView, QLineEdit, QMainWindow,
                              QMenuBar, QMessageBox, QPushButton, QSizePolicy,
-                             QSpinBox, QTableView, QVBoxLayout, QWidget)
+                             QSpacerItem, QSpinBox, QTableView, QVBoxLayout,
+                             QWidget)
 
 from dict_types import CheckBoxDict, NumericDict, OneOfDict
 
@@ -203,6 +204,12 @@ class MainWindow(QMainWindow):
 
         # connect the stateChanged signal of the `Match whole word only` checkbox
         self.match_whole_word.stateChanged.connect(self.perform_search)  # type: ignore
+
+        # create spacer to maintain consistent layout
+        self.spacer = QSpacerItem(
+            240, 0, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed
+        )
+        self.search_layout.addItem(self.spacer)
 
         # add search layot to layout
         layout.addLayout(self.search_layout)
