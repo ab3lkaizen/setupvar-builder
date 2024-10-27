@@ -5,10 +5,10 @@ from PyQt6.QtCore import (QAbstractTableModel, QModelIndex, QRect, Qt,
                           pyqtSignal)
 from PyQt6.QtGui import QAction, QKeySequence
 from PyQt6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFileDialog,
-                             QHBoxLayout, QHeaderView, QLineEdit, QMainWindow,
-                             QMenuBar, QMessageBox, QPushButton, QSizePolicy,
-                             QSpacerItem, QSpinBox, QTableView, QVBoxLayout,
-                             QWidget)
+                             QHBoxLayout, QHeaderView, QLabel, QLineEdit,
+                             QMainWindow, QMenuBar, QMessageBox, QPushButton,
+                             QSizePolicy, QSpacerItem, QSpinBox, QTableView,
+                             QVBoxLayout, QWidget)
 
 from dict_types import CheckBoxDict, NumericDict, OneOfDict
 
@@ -210,6 +210,15 @@ class MainWindow(QMainWindow):
             240, 0, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed
         )
         self.search_layout.addItem(self.spacer)
+
+        # create label
+        self.label = QLabel("Set all to:")
+        self.label.setVisible(False)
+        self.search_layout.addWidget(self.label)
+
+        # create apply button
+        self.apply_button = QPushButton("Apply")
+        self.apply_button.setFixedSize(85, 25)
 
         # add search layot to layout
         layout.addLayout(self.search_layout)
