@@ -178,12 +178,12 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout()
 
         # create layout for search bar
-        search_layout = QHBoxLayout()
+        self.search_layout = QHBoxLayout()
 
         # create search bar
         self.search_bar = QLineEdit(self)
         self.search_bar.setPlaceholderText("Search")
-        search_layout.addWidget(self.search_bar)
+        self.search_layout.addWidget(self.search_bar)
 
         # connect the QLineEdit's textChanged signal
         self.search_bar.textChanged.connect(self.perform_search)  # type: ignore
@@ -191,7 +191,7 @@ class MainWindow(QMainWindow):
         # create 'Match case' checkbox
         self.match_case = QCheckBox()
         self.match_case.setText("Match case")
-        search_layout.addWidget(self.match_case)
+        self.search_layout.addWidget(self.match_case)
 
         # connect the stateChanged signal of the `Match case` checkbox
         self.match_case.stateChanged.connect(self.perform_search)  # type: ignore
@@ -199,13 +199,13 @@ class MainWindow(QMainWindow):
         # create 'Match whole word only' checkbox
         self.match_whole_word = QCheckBox()
         self.match_whole_word.setText("Match whole word only")
-        search_layout.addWidget(self.match_whole_word)
+        self.search_layout.addWidget(self.match_whole_word)
 
         # connect the stateChanged signal of the `Match whole word only` checkbox
         self.match_whole_word.stateChanged.connect(self.perform_search)  # type: ignore
 
         # add search layot to layout
-        layout.addLayout(search_layout)
+        layout.addLayout(self.search_layout)
 
         # add table view to layout
         layout.addWidget(self.table_view, 1)
