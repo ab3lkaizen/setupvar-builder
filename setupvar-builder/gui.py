@@ -225,6 +225,7 @@ class MainWindow(QMainWindow):
         # create apply button
         self.apply_button = QPushButton("Apply")
         self.apply_button.setFixedSize(85, 25)
+        self.apply_button.clicked.connect(lambda: self.check_widget_value(self.dynamic_widget))  # type: ignore
 
         # add search layot to layout
         layout.addLayout(self.search_layout)
@@ -515,6 +516,29 @@ class MainWindow(QMainWindow):
         return any(
             isinstance(layout.itemAt(i), QSpacerItem) for i in range(layout.count())
         )
+
+    def check_widget_value(self, widget: QWidget):
+        """Set values for widgets in the filtered rows based on the initial widget's value."""
+        value = None  # initialize value to ensure it is always bound
+
+        if isinstance(widget, QComboBox):
+            value = widget.currentText()
+        elif isinstance(widget, QSpinBox):
+            value = widget.value()
+        elif isinstance(widget, QCheckBox):
+            value = widget.isChecked()
+
+        if value is not None:
+            for row in self.filtered_rows:
+                widget_index = self.table_model.index(row, 3)
+                row_widget = self.table_view.indexWidget(widget_index)
+
+                if isinstance(row_widget, QComboBox):
+                    row_widget.setCurrentText(str(value))
+                elif isinstance(row_widget, QSpinBox):
+                    row_widget.setValue(int(value))
+                elif isinstance(row_widget, QCheckBox):
+                    row_widget.setChecked(bool(value))
 
     def write_script(self):
         self.export.append(
