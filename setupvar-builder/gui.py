@@ -435,6 +435,9 @@ class MainWindow(QMainWindow):
                     self.dynamic_widget.setMinimum(-2147483648)
                     self.dynamic_widget.setMaximum(2147483647)
 
+                if self.has_spacer_item(self.search_layout):
+                    self.show_dynamic_widget()
+
     def get_widget_class(self, row: int, column: int) -> str:
         """Helper to retrieve the class name of a widget at a specific row and column."""
         widget_index = self.table_model.index(row, column)
@@ -484,6 +487,31 @@ class MainWindow(QMainWindow):
                         for key in keys_to_delete:
                             del data[key]
         return data
+
+    def show_dynamic_widget(self):
+        self.search_layout.removeItem(self.spacer)
+        self.label.setVisible(True)
+        self.search_layout.addWidget(self.label)
+        self.search_layout.addWidget(self.dynamic_widget)
+        self.search_layout.addWidget(self.apply_button)
+        self.apply_button.setVisible(True)
+
+    def hide_dynamic_widget(self):
+        self.label.setVisible(False)
+        self.search_layout.removeWidget(self.label)
+        if self.dynamic_widget is not None:
+            self.dynamic_widget.setVisible(False)
+            self.search_layout.removeWidget(self.dynamic_widget)
+        self.apply_button.setVisible(False)
+        self.search_layout.removeWidget(self.apply_button)
+        if not self.has_spacer_item(self.search_layout):
+            self.search_layout.addItem(self.spacer)
+
+    def has_spacer_item(self, layout: QHBoxLayout) -> bool:
+        """Helper to determine whether the layout contains a QSpacerItem."""
+        return any(
+            isinstance(layout.itemAt(i), QSpacerItem) for i in range(layout.count())
+        )
 
     def write_script(self):
         self.export.append(
