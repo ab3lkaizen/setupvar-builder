@@ -112,6 +112,9 @@ class MainWindow(QMainWindow):
         # initialize filtered rows set
         self.filtered_rows: set[int] = set()
 
+        # initialize dynamic widget
+        self.dynamic_widget = None
+
     def initialize_screen(self) -> QRect:
         # get the primary screen
         primary_screen = QApplication.primaryScreen()
@@ -400,6 +403,87 @@ class MainWindow(QMainWindow):
         viewport = self.table_view.viewport()
         if viewport is not None:
             viewport.update()
+
+        self.check_widgets(self.filtered_rows)
+
+    def check_widgets(self, visible_rows: set[int]):
+        if len(visible_rows) > 1:  # mass selection is not necessary otherwise
+            # get the class of the first widget in the visible rows
+            first_row = next(iter(visible_rows), None)
+            if first_row is None:
+                return
+
+            first_widget_class = self.get_widget_class(first_row, column=3)
+
+            # verify all widgets are of the same type
+            if not all(
+                self.get_widget_class(row, column=3) == first_widget_class
+                for row in visible_rows
+            ):
+                return  # exit if widgets differ
+
+            # create and configure the dynamic widget based on the widget type
+            self.dynamic_widget = self.create_dynamic_widget(first_widget_class)
+            if self.dynamic_widget is not None:
+                if first_widget_class == "QComboBox":
+                    data = self.collect_data_for_widget(visible_rows)
+
+                    self.dynamic_widget = cast(QComboBox, self.dynamic_widget)
+                    self.dynamic_widget.addItems(data.keys())
+                elif first_widget_class == "QSpinBox":
+                    self.dynamic_widget = cast(QSpinBox, self.dynamic_widget)
+                    self.dynamic_widget.setMinimum(-2147483648)
+                    self.dynamic_widget.setMaximum(2147483647)
+
+    def get_widget_class(self, row: int, column: int) -> str:
+        """Helper to retrieve the class name of a widget at a specific row and column."""
+        widget_index = self.table_model.index(row, column)
+        widget = self.table_view.indexWidget(widget_index)
+        return widget.__class__.__name__ if widget else ""
+
+    def create_dynamic_widget(self, widget_class_name: str) -> QWidget | None:
+        """Creates a dynamic widget based on widget class name."""
+        widget_mapping = {
+            "QComboBox": QComboBox,
+            "QSpinBox": QSpinBox,
+            "QCheckBox": QCheckBox,
+        }
+        widget_constructor = widget_mapping.get(widget_class_name)
+        if widget_constructor:
+            dynamic_widget = widget_constructor()
+            dynamic_widget.setMinimumSize(85, 23)
+            return dynamic_widget
+        return None
+
+    def collect_data_for_widget(self, visible_rows: set[int]) -> dict[str, str]:
+        """Collects relevant data for populating the QComboBox used for bulk setting adjustments."""
+        data: dict[str, str] = {}
+        for index, row in enumerate(visible_rows):
+            varstore_index = self.table_model.index(row, 1)
+            varoffset_index = self.table_model.index(row, 2)
+
+            varstore = str(self.table_model.data(varstore_index))
+            varoffset = str(self.table_model.data(varoffset_index))
+
+            if self.settings_dict:
+                oneof_dict = cast(OneOfDict, self.settings_dict[varstore][varoffset])
+
+                for option_name, option_value in oneof_dict["options"].items():
+                    if data.get(option_name) == option_value:
+                        keys_to_delete = [
+                            key for key in data if key not in oneof_dict["options"]
+                        ]
+                        for key in keys_to_delete:
+                            del data[key]
+                    elif data.get(option_name) is None and index == 0:
+                        data[option_name] = option_value
+                    else:
+                        keys_to_delete = [
+                            key for key in data if key not in oneof_dict["options"]
+                        ]
+                        for key in keys_to_delete:
+                            del data[key]
+        return data
 
     def write_script(self):
         self.export.append(
