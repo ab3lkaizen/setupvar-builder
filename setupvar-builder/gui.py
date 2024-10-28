@@ -190,6 +190,7 @@ class MainWindow(QMainWindow):
         self.search_layout.addWidget(self.search_bar)
 
         # connect the QLineEdit's textChanged signal
+        self.search_bar.textChanged.connect(self.hide_dynamic_widget)  # type: ignore
         self.search_bar.textChanged.connect(self.perform_search)  # type: ignore
 
         # create 'Match case' checkbox
@@ -198,6 +199,7 @@ class MainWindow(QMainWindow):
         self.search_layout.addWidget(self.match_case)
 
         # connect the stateChanged signal of the `Match case` checkbox
+        self.match_case.stateChanged.connect(self.hide_dynamic_widget)  # type: ignore
         self.match_case.stateChanged.connect(self.perform_search)  # type: ignore
 
         # create 'Match whole word only' checkbox
@@ -206,6 +208,7 @@ class MainWindow(QMainWindow):
         self.search_layout.addWidget(self.match_whole_word)
 
         # connect the stateChanged signal of the `Match whole word only` checkbox
+        self.match_whole_word.stateChanged.connect(self.hide_dynamic_widget)  # type: ignore
         self.match_whole_word.stateChanged.connect(self.perform_search)  # type: ignore
 
         # create spacer to maintain consistent layout
