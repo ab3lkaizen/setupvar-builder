@@ -69,17 +69,20 @@ class MyTableModel(QAbstractTableModel):
             return self.table_data[row][col]
         return None
 
-    def setFilter(self, query: str, match_case: bool, match_whole_word: bool):
+    def setFilter(
+        self, query: str, match_case: bool, match_whole_word: bool, exact_match: bool
+    ):
         """Filter rows based on a query in column 1"""
 
         # build the regex pattern based on the options
         flags = 0 if match_case else re.IGNORECASE
         word_boundary = r"\b" if match_whole_word else ""
         pattern = rf"{word_boundary}{re.escape(query)}{word_boundary}"
+        search_type = re.fullmatch if exact_match else re.search
 
         # filter rows
         self.filtered_data = [
-            row for row in self.table_data if re.search(pattern, row[0], flags)
+            row for row in self.table_data if search_type(pattern, row[0], flags)
         ]
 
         self.layoutChanged.emit()
@@ -210,6 +213,15 @@ class MainWindow(QMainWindow):
         # connect the stateChanged signal of the `Match whole word only` checkbox
         self.match_whole_word.stateChanged.connect(self.hide_dynamic_widget)  # type: ignore
         self.match_whole_word.stateChanged.connect(self.perform_search)  # type: ignore
+
+        # create 'Exact match only' checkbox
+        self.exact_match = QCheckBox()
+        self.exact_match.setText("Exact match only")
+        self.search_layout.addWidget(self.exact_match)
+
+        # connect the stateChanged signal of the `Exact match only` checkbox
+        self.exact_match.stateChanged.connect(self.hide_dynamic_widget)  # type: ignore
+        self.exact_match.stateChanged.connect(self.perform_search)  # type: ignore
 
         # create spacer to maintain consistent layout
         self.spacer = QSpacerItem(
@@ -381,11 +393,16 @@ class MainWindow(QMainWindow):
         search_text = self.search_bar.text()
         match_case = self.match_case.isChecked()
         match_whole_word = self.match_whole_word.isChecked()
+        exact_match = self.exact_match.isChecked()
 
         if len(search_text) >= 2:
-            self.table_model.setFilter(search_text, match_case, match_whole_word)
+            self.table_model.setFilter(
+                search_text, match_case, match_whole_word, exact_match
+            )
         else:
-            self.table_model.setFilter("", match_case, match_whole_word)
+            self.table_model.setFilter(
+                "", match_case, match_whole_word, exact_match=False
+            )
 
         # update visibility of rows
         self.update_rows_visibility()
