@@ -46,6 +46,8 @@ I am not responsible for any damage that may occur to your computer. This tool i
 2. Click on `File > Open` (CTRL + O) and select the converted IFR data
 
 3. Change the desired setting(s)
+    - Use the search function and its filters
+    - Use the bulk setting adjustment feature (top-right corner) if you want to change multiple settings of the same type and name
 
 4. Click on the `Export` button in the left bottom corner (CTRL + S) and save the script file
 
