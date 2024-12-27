@@ -14,11 +14,14 @@ I am not responsible for any damage that may occur to your computer. This tool i
 
 ### 1.1 Prerequisites
 
+> [!WARNING]
+> The generated script complies only with the syntax of setup_var.efi version `0.2.x`!
+
 - BIOS image
 - [UEFITool NE](https://github.com/LongSoft/UEFITool/releases/latest)
 - [IFRExtractor-RS](https://github.com/LongSoft/IFRExtractor-RS/releases/latest)
 - [setupvar-builder](https://github.com/ab3lkaizen/setupvar-builder/releases/latest)
-- [setup_var.efi](https://github.com/datasone/setup_var.efi/releases/latest)
+- [setup_var.efi](https://github.com/datasone/setup_var.efi/releases) (version `0.2.x`)
 - USB drive
 
 ### 1.2 Extracting and converting the required file
