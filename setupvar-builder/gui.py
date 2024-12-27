@@ -85,10 +85,13 @@ class MyTableModel(QAbstractTableModel):
         pattern = rf"{word_boundary}{search_string}{word_boundary}"
         search_type = re.fullmatch if exact_match else re.search
 
-        # filter rows
-        self.filtered_data = [
-            row for row in self.table_data if search_type(pattern, row[0], flags)
-        ]
+        try:
+            # filter rows
+            self.filtered_data = [
+                row for row in self.table_data if search_type(pattern, row[0], flags)
+            ]
+        except re.error:
+            self.filtered_data = []
 
         self.layoutChanged.emit()
 
