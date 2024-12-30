@@ -49,8 +49,11 @@ I am not responsible for any damage that may occur to your computer. This tool i
 2. Click on `File > Open` (CTRL + O) and select the converted IFR data
 
 3. Change the desired setting(s)
+
     - Use the search function and its filters
+
         - Refer to this [cheatsheet](https://www.w3schools.com/python/python_regex.asp) for possible regular expression patterns
+
     - Use the bulk setting adjustment feature (top-right corner) if you want to change multiple settings of the same type and name
 
 4. Click on the `Export` button in the left bottom corner (CTRL + S) and save the script file
@@ -60,7 +63,9 @@ I am not responsible for any damage that may occur to your computer. This tool i
 1. Format a USB drive as `FAT32`
 
 2. Download a UEFI shell from one of the following sources:
+
     - [UEFI-Shell](https://github.com/pbatard/UEFI-Shell/releases/latest) (`shellx64.efi`)
+
     - Official [EDK2 stable releases](https://github.com/tianocore/edk2/releases/download/edk2-stable202002/ShellBinPkg.zip) (`ShellBinPkg > UefiShell > X64 > Shell.efi`); note that this shell might be outdated
 
 3. Rename the UEFI shell to `BOOTX64.EFI` and put it in `USB:\EFI\BOOT`
@@ -72,7 +77,9 @@ I am not responsible for any damage that may occur to your computer. This tool i
 1. Boot from the USB drive
 
 2. Select your USB drive by typing its map identifier:
+
     - Examine the **Mapping Table** that is displayed by default. If you have cleared the CLI, type `map` to redisplay it.
+
     - Most likely, it will be `FS0:`
 
 3. Run the script file with the following command:
